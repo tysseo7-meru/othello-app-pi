@@ -406,19 +406,27 @@
   // Pi-Browser-only notice — this build has no manual-username fallback.
   function applyPiIdentity() {
     if (!window.PiAuth) return;
-    // Temporary diagnostic (2026-11-04): show the sign-in step/error on
-    // the gate so a failure can be identified from a screenshot.
-    var diagEl = $("pi-gate-diag");
-    if (diagEl) {
-      var de = window.PiAuth.getLastError();
-      diagEl.textContent = "[" + window.PiAuth.getStatus() + "] " + window.PiAuth.getLastStep() + (de ? " — " + de : "");
-    }
     if (!window.PiAuth.isSignedIn()) {
       // Pi-Browser-only gate: sign-in failed or timed out, so this is not
       // a working Pi Browser session — keep the gate up with the notice.
       if (window.PiAuth.getStatus() === "unavailable") {
-        $("pi-gate-title").textContent = I.t("piOnlyTitle");
-        $("pi-gate-body").textContent = I.t("piOnlyBody");
+        var err = window.PiAuth.getLastError() || "";
+        if (err.indexOf("TIMEOUT") === 0) {
+          // Pi.authenticate never answered: in Pi Browser but opened via
+          // the raw hosting URL — App Studio sign-in only responds when
+          // the app is opened through its PiNet link (diagnosed
+          // 2026-11-04), so point the user there instead.
+          $("pi-gate-title").textContent = I.t("piTimeoutTitle");
+          $("pi-gate-body").innerHTML = "";
+          $("pi-gate-body").appendChild(document.createTextNode(I.t("piTimeoutBody") + " "));
+          var a = document.createElement("a");
+          a.href = "https://othellomocovutk2149.pinet.com";
+          a.textContent = "othellomocovutk2149.pinet.com";
+          $("pi-gate-body").appendChild(a);
+        } else {
+          $("pi-gate-title").textContent = I.t("piOnlyTitle");
+          $("pi-gate-body").textContent = I.t("piOnlyBody");
+        }
       }
       return;
     }
