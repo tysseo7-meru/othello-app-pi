@@ -2,17 +2,18 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
   background: linear-gradient(160deg, #f2edfa, #d8c6f0 60%, #f2edfa);
   color: #3a2158;
   min-height: 100vh;
   -webkit-tap-highlight-color: transparent;
 }
+button, input, select { font-family: inherit; }
 .hidden { display: none !important; }
 
 .screen { max-width: 520px; margin: 0 auto; padding: 20px 16px 40px; }
-.app-title { text-align: center; font-size: 2.6rem; margin: 26px 0 4px; letter-spacing: .06em; }
+.app-title { text-align: center; font-size: 2.6rem; font-weight: 800; margin: 26px 0 4px; letter-spacing: .06em; }
 .app-subtitle { text-align: center; opacity: .85; margin: 0 0 22px; }
 .screen-title { text-align: center; font-size: 1.7rem; margin: 14px 0 16px; }
 

@@ -7,7 +7,7 @@
 
   var STRINGS = {
     en: {
-      appTitle: "Othello",
+      appTitle: "Reversi",
       appSubtitle: "Play against the CPU",
       usernameLabel: "Username",
       usernamePlaceholder: "Enter your name",
@@ -63,7 +63,7 @@
       rankingLoadFailed: "Could not load the ranking: "
     },
     ja: {
-      appTitle: "オセロ",
+      appTitle: "リバーシ",
       appSubtitle: "CPUと対戦しよう",
       usernameLabel: "ユーザー名",
       usernamePlaceholder: "名前を入力してください",
