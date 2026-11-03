@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-932K1V090N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-932K1V090N');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://socialchain.app https://backend.appstudio-u7cm9zhmha0ruwv8.piappengine.com https://firestore.googleapis.com https://www.google-analytics.com">
+<title>Othello</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%231e8a4c'/><circle cx='38' cy='38' r='16' fill='%23111'/><circle cx='63' cy='63' r='16' fill='%23fff'/></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="banner" class="banner hidden" role="status"></div>
+
+<!-- ============ TOP SCREEN ============ -->
+<section id="screen-top" class="screen">
+  <h1 class="app-title" data-i18n="appTitle">Othello</h1>
+  <p class="app-subtitle" data-i18n="appSubtitle">Play against the CPU</p>
+
+  <div class="card">
+    <div id="username-block">
+      <label class="field-label" for="username" data-i18n="usernameLabel">Username</label>
+      <input id="username" type="text" maxlength="20" autocomplete="off"
+             data-i18n-placeholder="usernamePlaceholder" placeholder="Enter your name">
+      <p id="username-error" class="error hidden" data-i18n="usernameRequired">Please enter a username first.</p>
+    </div>
+    <p id="pi-signedin" class="note hidden"></p>
+
+    <span class="field-label" data-i18n="difficultyLabel">Difficulty</span>
+    <div class="segmented" id="difficulty-select" role="radiogroup">
+      <button type="button" data-level="low" data-i18n="levelLow">Low</button>
+      <button type="button" data-level="mid" data-i18n="levelMid">Mid</button>
+      <button type="button" data-level="high" data-i18n="levelHigh">High</button>
+    </div>
+
+    <span class="field-label" data-i18n="languageLabel">Language</span>
+    <div class="segmented" id="language-select">
+      <button type="button" data-lang="en">English</button>
+      <button type="button" data-lang="ja">日本語</button>
+    </div>
+
+    <div class="row-between">
+      <span class="field-label inline" data-i18n="bgmLabel">BGM</span>
+      <button type="button" id="bgm-toggle-top" class="toggle-btn">OFF</button>
+    </div>
+
+    <p class="note" data-i18n="youAreBlack">You are Black (first move)</p>
+    <button type="button" id="start-btn" class="primary-btn" data-i18n="startGame">Start Game</button>
+    <button type="button" id="ranking-btn-top" class="secondary-btn" data-i18n="viewRanking">Ranking</button>
+  </div>
+</section>
+
+<!-- ============ GAME SCREEN ============ -->
+<section id="screen-game" class="screen hidden">
+  <div class="scorebar">
+    <div class="score-side">
+      <span class="disc-icon black"></span>
+      <span data-i18n="you">You</span>
+      <strong id="score-black">2</strong>
+    </div>
+    <div id="turn-indicator" class="turn-indicator"></div>
+    <div class="score-side">
+      <span class="disc-icon white"></span>
+      <span data-i18n="cpu">CPU</span>
+      <strong id="score-white">2</strong>
+    </div>
+  </div>
+  <p class="game-meta"><span data-i18n="levelPrefix">Level: </span><span id="difficulty-label"></span></p>
+
+  <div id="board" class="board" aria-label="Othello board"></div>
+  <p id="game-message" class="game-message"></p>
+
+  <div class="game-controls">
+    <div class="row-between">
+      <span class="field-label inline" data-i18n="bgmLabel">BGM</span>
+      <button type="button" id="bgm-toggle-game" class="toggle-btn">OFF</button>
+    </div>
+    <button type="button" id="back-to-top-btn" class="secondary-btn" data-i18n="backToTop">Back to Top</button>
+  </div>
+</section>
+
+<!-- ============ RANKING SCREEN ============ -->
+<section id="screen-ranking" class="screen hidden">
+  <h2 class="screen-title" data-i18n="rankingTitle">Ranking</h2>
+  <p id="ranking-status" class="note"></p>
+  <div class="table-wrap">
+    <table class="ranking-table">
+      <thead>
+        <tr>
+          <th data-i18n="rankColRank">Rank</th>
+          <th data-i18n="rankColName">Username</th>
+          <th data-i18n="rankColTotal">Total Wins</th>
+          <th data-i18n="rankColLevels">Low / Mid / High</th>
+        </tr>
+      </thead>
+      <tbody id="ranking-body"></tbody>
+    </table>
+  </div>
+  <p id="ranking-empty" class="note hidden" data-i18n="rankingEmpty">No wins recorded yet. Be the first!</p>
+  <button type="button" id="ranking-back-btn" class="secondary-btn" data-i18n="back">Back</button>
+</section>
+
+<!-- ============ COUNTDOWN OVERLAY ============ -->
+<div id="countdown-overlay" class="overlay hidden">
+  <div id="countdown-number" class="countdown-number">3</div>
+</div>
+
+<!-- ============ RESULT DIALOG ============ -->
+<div id="result-dialog" class="overlay hidden">
+  <div class="dialog">
+    <h2 id="result-title"></h2>
+    <p><span data-i18n="finalScore">Final score</span>: <strong id="result-score"></strong></p>
+    <p id="result-saved" class="note hidden" data-i18n="resultSaved">Your win was saved to the ranking.</p>
+    <button type="button" id="result-ranking-btn" class="primary-btn" data-i18n="viewRanking">Ranking</button>
+    <button type="button" id="result-again-btn" class="secondary-btn" data-i18n="playAgain">Play Again</button>
+    <button type="button" id="result-top-btn" class="secondary-btn" data-i18n="backToTop">Back to Top</button>
+  </div>
+</div>
+
+<!-- ============ CONFIRM LEAVE DIALOG ============ -->
+<div id="confirm-dialog" class="overlay hidden">
+  <div class="dialog">
+    <p data-i18n="confirmLeave">Leave this game and return to the top screen? Nothing will be recorded.</p>
+    <button type="button" id="confirm-leave-btn" class="primary-btn" data-i18n="leaveYes">Leave</button>
+    <button type="button" id="confirm-cancel-btn" class="secondary-btn" data-i18n="cancel">Cancel</button>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/cpu.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/db.js"></script>
+<script src="js/pi.js?v=diag3"></script>
+<script src="js/audio.js"></script>
+<script src="js/app.js?v=diag3"></script>
+</body>
+</html>
