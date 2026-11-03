@@ -17,7 +17,8 @@
     username: "othello.username",
     level: "othello.level",
     bgm: "othello.bgm",
-    playerId: "othello.playerId"
+    playerId: "othello.playerId",
+    gset: "othello.gset"
   };
 
   function $(id) { return document.getElementById(id); }
@@ -46,6 +47,19 @@
   var lang = localStorage.getItem(LS.lang) || "en";
   var level = localStorage.getItem(LS.level) || "mid";
   var bgmOn = localStorage.getItem(LS.bgm) === "1";
+  // Legal-move guide markers, switched by URL parameter (?gset=on /
+  // ?gset=off, user request 2026-11-03): the parameter wins and is
+  // remembered in localStorage; without it the remembered choice
+  // applies; the default is off.
+  var guidesOn = (function () {
+    var p = null;
+    try { p = new URLSearchParams(window.location.search).get("gset"); } catch (e) {}
+    if (p === "on" || p === "off") {
+      localStorage.setItem(LS.gset, p);
+      return p === "on";
+    }
+    return localStorage.getItem(LS.gset) === "on";
+  })();
   I.setLang(lang);
 
   /* ---------- banner ---------- */
@@ -134,13 +148,18 @@
     var counts = E.countDiscs(board);
     $("score-black").textContent = counts.black;
     $("score-white").textContent = counts.white;
-    // No legal-move hint markers are rendered (user request, 2026-11-03):
-    // the board never marks where a stone can be placed. Legal moves are
-    // still computed by the engine for the CPU and to validate taps
-    // (see the tap handler), just never shown.
+    // Legal-move guide markers: when ?gset=on, the player's legal
+    // cells are dotted (the .legal style); otherwise no markers are
+    // shown. Legal moves are always computed by the engine for the
+    // CPU and to validate taps (see the tap handler).
+    var markSet = null;
+    if (guidesOn && !gameOver && turn === BLACK && !anim) {
+      markSet = {};
+      E.legalMoves(board, BLACK).forEach(function (m) { markSet[m.index] = true; });
+    }
     for (var i = 0; i < 64; i++) {
       var cell = cellEls[i];
-      cell.classList.remove("legal");
+      cell.classList.toggle("legal", !!(markSet && markSet[i] && board[i] === E.EMPTY));
       var v = board[i];
       var disc = cell.querySelector(".disc");
       if (v === E.EMPTY) {
