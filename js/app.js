@@ -97,6 +97,7 @@
     });
     $("difficulty-label").textContent = I.levelName(level);
     updateBgmButtons();
+    updateGuideButton();
     updateTurnIndicator();
     if (piUser) $("pi-signedin").textContent = I.t("piSignedInAs") + ": " + piUser.username;
   }
@@ -114,6 +115,19 @@
     localStorage.setItem(LS.bgm, on ? "1" : "0");
     if (on) { Snd.unlock(); Snd.bgmStart(); } else { Snd.bgmStop(); }
     updateBgmButtons();
+  }
+
+  /* ---------- guide markers (top-screen toggle) ---------- */
+  function updateGuideButton() {
+    var b = $("guide-toggle-top");
+    if (!b) return;
+    b.textContent = I.t("guideLabel") + ": " + (guidesOn ? I.t("guideOn") : I.t("guideOff"));
+    b.classList.toggle("on", guidesOn);
+  }
+  function setGuides(on) {
+    guidesOn = on;
+    localStorage.setItem(LS.gset, on ? "on" : "off");
+    updateGuideButton();
   }
   // Autoplay policy: start BGM on the first user gesture if the pref is on.
   document.addEventListener("pointerdown", function firstGesture() {
@@ -449,6 +463,7 @@
     });
 
     $("bgm-toggle-top").addEventListener("click", function () { setBgm(!bgmOn); });
+    $("guide-toggle-top").addEventListener("click", function () { setGuides(!guidesOn); });
     $("bgm-toggle-game").addEventListener("click", function () { setBgm(!bgmOn); });
     $("start-btn").addEventListener("click", startGame);
     $("ranking-btn-top").addEventListener("click", function () { openRanking("top"); });
