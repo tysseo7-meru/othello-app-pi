@@ -365,14 +365,24 @@
   }
 
   /* ---------- Pi sign-in identity ---------- */
-  // Runs when js/pi.js reports a settled sign-in. On success the top
-  // screen shows the App Studio-verified Pi username, the manual name
-  // input is hidden, and wins are recorded under "pi:<uid>". On failure
-  // (no Pi SDK / not in Pi Browser / exchange failed) nothing changes:
-  // the manual username flow stays exactly as it was.
+  // Runs when js/pi.js reports a settled sign-in. On success the
+  // Pi-Browser-only gate lifts, the top screen shows the App
+  // Studio-verified Pi username, the manual name input is hidden, and
+  // wins are recorded under "pi:<uid>". On failure (no Pi SDK / not in
+  // Pi Browser / exchange failed) the gate stays up with the
+  // Pi-Browser-only notice — this build has no manual-username fallback.
   function applyPiIdentity() {
     if (!window.PiAuth) return;
-    if (!window.PiAuth.isSignedIn()) return;
+    if (!window.PiAuth.isSignedIn()) {
+      // Pi-Browser-only gate: sign-in failed or timed out, so this is not
+      // a working Pi Browser session — keep the gate up with the notice.
+      if (window.PiAuth.getStatus() === "unavailable") {
+        $("pi-gate-title").textContent = I.t("piOnlyTitle");
+        $("pi-gate-body").textContent = I.t("piOnlyBody");
+      }
+      return;
+    }
+    $("pi-gate").classList.add("hidden");
     var u = window.PiAuth.getUser();
     if (!u) return;
     piUser = { uid: u.uid, username: u.username };
@@ -464,6 +474,11 @@
     // Pi sign-in (js/pi.js): attempted once on load; silently falls back
     // to the manual username flow when unavailable.
     if (window.PiAuth) {
+      // Pi-Browser-only gate: while sign-in is in flight the gate shows a
+      // signing-in message; applyPiIdentity hides it on success or swaps
+      // in the Pi-Browser-only notice on failure.
+      $("pi-gate-title").textContent = I.t("piOnlyTitle");
+      $("pi-gate-body").textContent = I.t("piGateSigningIn");
       window.PiAuth.onChange(applyPiIdentity);
       window.PiAuth.signIn();
     }

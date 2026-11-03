@@ -138,3 +138,16 @@ input[type="text"]:focus { border-color: #e57373; }
   z-index: 100; box-shadow: 0 6px 20px rgba(0,0,0,.4); max-width: 92vw; text-align: center;
 }
 .banner.error-banner { background: #a33327; }
+
+/* Pi-Browser-only gate (othello-app-pi build only) */
+.pi-gate {
+  position: fixed; inset: 0; z-index: 1000;
+  background: linear-gradient(160deg, #f2edfa, #d8c6f0 55%, #f2edfa);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.pi-gate-card {
+  background: rgba(255,255,255,.88); border-radius: 16px; padding: 28px 24px;
+  max-width: 420px; text-align: center; box-shadow: 0 8px 30px rgba(58,33,88,.18);
+}
+.pi-gate-title { font-size: 1.25rem; font-weight: 700; color: #3a2158; margin: 0 0 12px; }
+.pi-gate-body { color: #3a2158; line-height: 1.7; margin: 0; }

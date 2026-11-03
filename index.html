@@ -15,9 +15,20 @@
 <title>Othello</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%231e8a4c'/><circle cx='38' cy='38' r='16' fill='%23111'/><circle cx='63' cy='63' r='16' fill='%23fff'/></svg>">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=pionly1">
 </head>
 <body>
+
+<!-- Pi-Browser-only gate (this Pi build only): covers the app until Pi
+     sign-in succeeds. In any other browser sign-in never completes, so
+     the notice stays up. Static bilingual text so the message shows
+     even if a script fails to load. -->
+<div id="pi-gate" class="pi-gate">
+  <div class="pi-gate-card">
+    <p id="pi-gate-title" class="pi-gate-title">Pi Browser only / Piブラウザ専用です</p>
+    <p id="pi-gate-body" class="pi-gate-body">This app works only in Pi Browser. Please open it in Pi Browser.<br>このアプリは Pi ブラウザでのみ動作します。Pi ブラウザで開いてください。</p>
+  </div>
+</div>
 
 <div id="banner" class="banner hidden" role="status"></div>
 
@@ -138,10 +149,10 @@
 <script src="js/config.js"></script>
 <script src="js/engine.js"></script>
 <script src="js/cpu.js"></script>
-<script src="js/i18n.js"></script>
+<script src="js/i18n.js?v=pionly1"></script>
 <script src="js/db.js"></script>
 <script src="js/pi.js?v=diag3"></script>
 <script src="js/audio.js"></script>
-<script src="js/app.js?v=diag3"></script>
+<script src="js/app.js?v=pionly1"></script>
 </body>
 </html>
