@@ -70,14 +70,16 @@
       return;
     }
     status = "pending";
-    // Diagnostic watchdog (2026-11-03): if neither Pi.authenticate nor the
-    // App Studio exchange answers within 20 s, surface that as the failure
-    // reason instead of hanging silently in "pending" forever.
+    // Watchdog: if neither Pi.authenticate nor the App Studio exchange
+    // answers within 60 s, surface that as the failure reason instead of
+    // hanging silently in "pending" forever. (Raised from 20 s on
+    // 2026-11-04: the App Studio backend was measured answering in
+    // ~18 s, which left too little room for the whole chain.)
     setTimeout(function () {
       if (status === "pending") {
-        fail("TIMEOUT: Pi sign-in produced no response within 20 seconds (Pi.authenticate or the App Studio exchange did not answer)");
+        fail("TIMEOUT: Pi sign-in produced no response within 60 seconds (Pi.authenticate or the App Studio exchange did not answer)");
       }
-    }, 20000);
+    }, 60000);
     Promise.resolve()
       .then(function () { setStep("step1: Pi.init called"); return global.Pi.init({ version: "2.0" }); })
       .then(function () { setStep("step2: Pi.init done; Pi.authenticate called"); return global.Pi.authenticate(["username"], onIncompletePaymentFound); })
