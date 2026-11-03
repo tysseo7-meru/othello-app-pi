@@ -372,22 +372,7 @@
   // the manual username flow stays exactly as it was.
   function applyPiIdentity() {
     if (!window.PiAuth) return;
-    if (!window.PiAuth.isSignedIn()) {
-      // Diagnostic (2026-11-03): surface the sign-in state, the step the
-      // flow reached, and WHY it failed, instead of failing silently,
-      // while we verify the flow in the real Pi Browser.
-      var st = window.PiAuth.getStatus();
-      var errEl = $("pi-signedin");
-      if (st === "unavailable") {
-        errEl.textContent = "[Pi診断] サインイン失敗: " + (window.PiAuth.getLastError() || "unknown") +
-          " / 段階: " + window.PiAuth.getLastStep();
-        errEl.classList.remove("hidden");
-      } else if (st === "pending") {
-        errEl.textContent = "[Pi診断] 処理中… 段階: " + window.PiAuth.getLastStep();
-        errEl.classList.remove("hidden");
-      }
-      return;
-    }
+    if (!window.PiAuth.isSignedIn()) return;
     var u = window.PiAuth.getUser();
     if (!u) return;
     piUser = { uid: u.uid, username: u.username };
@@ -481,13 +466,6 @@
     if (window.PiAuth) {
       window.PiAuth.onChange(applyPiIdentity);
       window.PiAuth.signIn();
-      // Diagnostic (2026-11-03): prove the current JS is running and show
-      // that sign-in is in flight; applyPiIdentity replaces this on settle.
-      if (window.PiAuth.getStatus() === "pending" || window.PiAuth.getStatus() === "idle") {
-        var diagEl = $("pi-signedin");
-        diagEl.textContent = "[Pi診断] サインイン処理中…";
-        diagEl.classList.remove("hidden");
-      }
     }
   }
 
