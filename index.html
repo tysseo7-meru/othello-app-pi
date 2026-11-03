@@ -19,14 +19,14 @@
 </head>
 <body>
 
-<!-- Pi-Browser-only gate (this Pi build only): covers the app until Pi
-     sign-in succeeds. In any other browser sign-in never completes, so
-     the notice stays up. Static bilingual text so the message shows
-     even if a script fails to load. -->
+<!-- Pi-Browser-only gate (this Pi build only): covers the app with a
+     neutral loading message while Pi sign-in is decided. On success it
+     lifts; only on failure (i.e. not Pi Browser) does app.js swap in
+     the Pi-Browser-only notice. -->
 <div id="pi-gate" class="pi-gate">
   <div class="pi-gate-card">
-    <p id="pi-gate-title" class="pi-gate-title">Pi Browser only / Piブラウザ専用です</p>
-    <p id="pi-gate-body" class="pi-gate-body">This app works only in Pi Browser. Please open it in Pi Browser.<br>このアプリは Pi ブラウザでのみ動作します。Pi ブラウザで開いてください。</p>
+    <p id="pi-gate-title" class="pi-gate-title">Othello / オセロ</p>
+    <p id="pi-gate-body" class="pi-gate-body">Loading… / 読み込み中…</p>
   </div>
 </div>
 
@@ -149,10 +149,10 @@
 <script src="js/config.js"></script>
 <script src="js/engine.js"></script>
 <script src="js/cpu.js"></script>
-<script src="js/i18n.js?v=pionly1"></script>
+<script src="js/i18n.js?v=pionly3"></script>
 <script src="js/db.js"></script>
 <script src="js/pi.js?v=diag3"></script>
 <script src="js/audio.js"></script>
-<script src="js/app.js?v=pionly2"></script>
+<script src="js/app.js?v=pionly3"></script>
 </body>
 </html>

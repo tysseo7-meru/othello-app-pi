@@ -474,12 +474,12 @@
     // Pi sign-in (js/pi.js): attempted once on load; silently falls back
     // to the manual username flow when unavailable.
     if (window.PiAuth) {
-      // Pi-Browser-only gate: the gate shows the one fixed notice from
-      // the start (no intermediate "signing in" state, so the text never
-      // flips); applyPiIdentity hides the gate on success. In Pi Browser
-      // the native consent dialog appears over it almost immediately.
-      $("pi-gate-title").textContent = I.t("piOnlyTitle");
-      $("pi-gate-body").textContent = I.t("piOnlyBody");
+      // Pi-Browser-only gate: while sign-in is being decided the gate
+      // shows only a neutral loading message (never the Pi-Browser-only
+      // notice, so Pi Browser users never see it); applyPiIdentity hides
+      // the gate on success or swaps in the notice on failure.
+      $("pi-gate-title").textContent = I.t("appTitle");
+      $("pi-gate-body").textContent = I.t("piGateLoading");
       window.PiAuth.onChange(applyPiIdentity);
       window.PiAuth.signIn();
     }
