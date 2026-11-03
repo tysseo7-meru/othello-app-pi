@@ -406,6 +406,13 @@
   // Pi-Browser-only notice — this build has no manual-username fallback.
   function applyPiIdentity() {
     if (!window.PiAuth) return;
+    // Temporary diagnostic (2026-11-04): show the sign-in step/error on
+    // the gate so a failure can be identified from a screenshot.
+    var diagEl = $("pi-gate-diag");
+    if (diagEl) {
+      var de = window.PiAuth.getLastError();
+      diagEl.textContent = "[" + window.PiAuth.getStatus() + "] " + window.PiAuth.getLastStep() + (de ? " — " + de : "");
+    }
     if (!window.PiAuth.isSignedIn()) {
       // Pi-Browser-only gate: sign-in failed or timed out, so this is not
       // a working Pi Browser session — keep the gate up with the notice.
