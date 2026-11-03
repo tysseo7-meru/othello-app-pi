@@ -50,7 +50,7 @@
   // Legal-move guide markers, switched by URL parameter (?gset=on /
   // ?gset=off, user request 2026-11-03): the parameter wins and is
   // remembered in localStorage; without it the remembered choice
-  // applies; the default is off.
+  // applies; the default is ON (guides shown unless switched off).
   var guidesOn = (function () {
     var p = null;
     try { p = new URLSearchParams(window.location.search).get("gset"); } catch (e) {}
@@ -58,7 +58,7 @@
       localStorage.setItem(LS.gset, p);
       return p === "on";
     }
-    return localStorage.getItem(LS.gset) === "on";
+    return localStorage.getItem(LS.gset) !== "off";
   })();
   I.setLang(lang);
 
